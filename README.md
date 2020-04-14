@@ -1,2 +1,3 @@
-# blog
-my blog
+# GXFCba
+
+这是本站的仓库，会放一些代码示例。

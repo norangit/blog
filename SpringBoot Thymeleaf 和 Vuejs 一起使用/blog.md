@@ -2,7 +2,7 @@
 
 
 
-传统**非分离**的 **Web** 项目中，**Spring** 官方推荐优先使用 **Thymeleaf** 模板引擎来渲染 **HTML**。为了提升开发效率，在前端可以结合使用 **Vuejs，BootstrapVue** 这 2 个黄金搭档。
+传统**非分离**的 **Web** 项目中，**Spring** 官方推荐优先使用 **Thymeleaf** 模板引擎来渲染 **HTML**。为了提升开发效率，在前端可以配合使用 **Vuejs，BootstrapVue** 这 2 个黄金搭档。以下是开发过程中实用的比较典型的使用场景，保证你看了不会后悔 😆
 
 关于 **Vuejs** 是一个前端框架，可用实现双向绑定。参考 Vuejs 中文站，有详细的介绍，最适合那些懂点前端知识的后端开发人员了。参考这里：[Vue.js 是什么](https://cn.vuejs.org/v2/guide/index.html#Vue-js-是什么)。
 
@@ -14,7 +14,7 @@
 
 **Vuejs** 虽然很好用，但是它也有一个很大的缺陷，就是不支持在 html 标签里初始化 model 属性，比如：
 
-```javascript
+```html
 <input type="text" v-model="name" class="form-control" th:value="${backendName}" placeholder="Typein name"/>
 ```
 
@@ -44,7 +44,7 @@
 
 **th:attr** 的格式是这样的：
 
-```javascript
+```html
 th:attr="'key1'=${value1}, 'key2'=${'a2' + value2 + 'a3'}", 'key3'=${value3 + 'a3'}"
 ```
 

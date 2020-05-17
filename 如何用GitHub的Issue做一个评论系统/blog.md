@@ -2,9 +2,11 @@
 
 
 
-一个评论系统对于任何一个博客，或者说可以提问的站点来说都是很重要的，因为可以互动。如果没有评论系统就好比 { 失去了 }，是不完整的，鸡肋的。但是好多现成的评论系统像 Disqus、Talkyard、Staticman V2（这个和我接下来要说的实现工具一样都是基于 GitHub）、Gitalk 等都不适合，所以决定自己使用 GitHub V4 API 自己搞一个。上述评论系统的优缺点我就不细说了，请参考这篇详细的文章 -> [静态博客评论系统的比较及选择](https://weiweitop.fun/2019/08/10/%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2%E8%AF%84%E8%AE%BA%E7%B3%BB%E7%BB%9F%E7%9A%84%E6%AF%94%E8%BE%83%E5%8F%8A%E9%80%89%E6%8B%A9/)；
+一个评论系统对于任何一个博客，或者说可以提问的站点来说都是很重要的，因为可以互动。如果没有评论系统就好比 { 失去了 }，是不完整的，鸡肋的。但是好多现成的评论系统像 **Disqus**、**Talkyard**、**Staticman V2**（这个和我接下来要说的实现工具一样都是基于 **GitHub**）、**Gitalk** 等都不适合，所以决定自己使用 **GitHub** V4 API 自己搞一个。
 
-接下来是重点，我要使用 GitHub 提供一揽子功能完整的评论系统，所有数据全部安全的保存在 GitHub，既减轻了自己服务器的压力，又减少了硬盘空间的占用，因为个人博客通常都是需要买云服务器的，硬盘老贵了。
+上述评论系统的优缺点我就不细说了，请参考这篇详细的文章 -> [静态博客评论系统的比较及选择](https://weiweitop.fun/2019/08/10/%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2%E8%AF%84%E8%AE%BA%E7%B3%BB%E7%BB%9F%E7%9A%84%E6%AF%94%E8%BE%83%E5%8F%8A%E9%80%89%E6%8B%A9/)；
+
+接下来是重点，我要使用 **GitHub** 提供一揽子功能完整的评论系统，所有数据全部安全的保存在 **GitHub**，既减轻了自己服务器的压力，又减少了硬盘空间的占用，因为个人博客通常都是需要买云服务器的，硬盘老贵了。
 
 
 
@@ -53,22 +55,22 @@ V3 版本是传统的 JSON 格式，不支持一次抓取多种数据。
 1. 创建一个 **Issue**：
 
 ``` JavaScript
-    # assigneeIds： 指定给谁，根据需要自己指定，理论上来说是评论系统应当指定给自己，注意这是第一次创建 Issue（评论），在 GitHub 里这等于 2 个操作，创建一个 Issue，并且发布一个评论。
-    #labelIds：是 Bug 还是别的，请参考官方 API，对于评论来说这个没有也无所谓了。。。
-    #repositoryId：顾名思义，Repository ID
-    #title: 这个是 Issue 的 title，可以使用博客的标题
+# assigneeIds： 指定给谁，根据需要自己指定，理论上来说是评论系统应当指定给自己，注意这是第一次创建 Issue（评论），在 GitHub 里这等于 2 个操作，创建一个 Issue，并且发布一个评论。
+#labelIds：是 Bug 还是别的，请参考官方 API，对于评论来说这个没有也无所谓了。。。
+#repositoryId：顾名思义，Repository ID
+#title: 这个是 Issue 的 title，可以使用博客的标题
 
-    #以下代码是在 repositoryId 为 MDEwOlJlcG9zaXRvcnkxNTU3MTc2NDA= 的仓库下，创建一个 Label 为 MDU6TGFiZWwxMTEyNjU2ODc0 ，标题为 ${title} 的 Issue，注意这里使用到了 ES6 里的字符串模板，反引号
-    {
-        query: `mutation {
-                    createIssue(input: {assigneeIds: null, labelIds: "MDU6TGFiZWwxMTEyNjU2ODc0", projectIds: null, repositoryId: "MDEwOlJlcG9zaXRvcnkxNTU3MTc2NDA=", title: "${title}" }){
-                        issue{
-                            id
-                            number
-                        }
-                    }
-                }`
-    }
+#以下代码是在 repositoryId 为 MDEwOlJlcG9zaXRvcnkxNTU3MTc2NDA= 的仓库下，创建一个 Label 为 MDU6TGFiZWwxMTEyNjU2ODc0 ，标题为 ${title} 的 Issue，注意这里使用到了 ES6 里的字符串模板，反引号
+{
+    query: `mutation {
+               createIssue(input: {assigneeIds: null, labelIds: "MDU6TGFiZWwxMTEyNjU2ODc0", projectIds: null, repositoryId: "MDEwOlJlcG9zaXRvcnkxNTU3MTc2NDA=", title: "${title}" }){
+                  issue{
+                     id
+                      number
+                  }
+              }
+           }`
+}
 ```
 
 可以在 GitHub 的 Issue 里看看都有哪些 Label，然后挨个加一个，在上面的编辑器里查询刚刚加的 Label，我在 V4 版本里没有找到说明 -_-||：
@@ -195,7 +197,7 @@ $.ajax({
 
 解决这个安全问题稍微有点麻烦了，需要 Nginx 配合了，通常生产环境的部署都会使用 Nginx 做最前端的入口，反向代理也就是。那就可以把这个 Authorization Header 配置到 Nginx location 块里，比如：
 
-```Shell
+```javascript
 location /api/comments/ {
 		#代理到 GitHub
 		proxy_pass https://api.github.com/;
@@ -231,7 +233,7 @@ $.ajax({
 
 这个模块的主要功能就是增强了好多 Nginx 本身不具有的功能，比如在一个 proxy_pass 里，我们需要根据请求携带的参数来做出判断，是否需要真正代理请求到真实的 Server，这是很有用的，可以减轻被代理 Server 的压力。可以利用 **rewrite_by_lua_block** 来处理，具体可以戳这里 -> [rewrite_by_lua_block 示例](https://github.com/openresty/lua-nginx-module#ngxreqget_post_args)
 
-```Shell
+```javascript
  location = /api/comments/ {
      rewrite_by_lua_block {
         ngx.req.read_body()  -- explicitly read the req body
@@ -265,7 +267,7 @@ $.ajax({
 
 当然，如果是管理员要删除的话，这个 URL 是不开放的，只有管理员知道的，就可以不做这个限制了，比如多加一个专门用来删除评论的 location 配置：
 
-```
+```javascript
 # reverse proxy
 location /api/comments/del/ {
   proxy_pass https://api.github.com/;
